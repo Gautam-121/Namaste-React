@@ -1,3 +1,6 @@
+import React from 'react'
+import ReactDom from 'react-dom/client'
+
 /*
 <div id="parent">
     <div id="child">
@@ -10,7 +13,7 @@
     <div>
 <div>
 *
-*
+*ReactElement(object) ---> HTML(Browser understood)
 */
 /*
 const heading = React.createElement(
@@ -40,7 +43,7 @@ const heading = React.createElement(
 
 console.log(heading)
 
-const root = ReactDOM.createRoot(document.getElementById("root"))
+const root = ReactDom.createRoot(document.getElementById("root"))
 
 root.render(heading)
 
