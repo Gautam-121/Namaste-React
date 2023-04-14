@@ -1,9 +1,48 @@
-#child1{
-    background-color: antiquewhite;
+.header{
+    display: flex;
+    text-align: center;
+    justify-content: space-between;
+    border: 1px solid black;
 }
-#child2{
-    background-color:aqua;
+
+.logo{
+    width: 100px;
 }
-#start,#end{
-    color: coral;
+
+.nav-items > ul{
+    font-size: 18px;
+    display: flex;
+    padding : 10px
 }
+
+.nav-items > ul > li {
+    padding: 10px;
+    margin : 10px;
+    list-style-type: none;
+}
+
+.search{
+    padding: 10px;
+}
+
+.restarent-container{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.res-card{
+    margin: 3px;
+    padding: 5px;
+    width : 200px;
+    height:fit-content;
+}
+
+.res-card:hover{
+    cursor: pointer;
+    border:1px solid black;
+}
+
+.res-logo{
+    width: 100%;
+}
+
