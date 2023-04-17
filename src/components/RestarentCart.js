@@ -1,4 +1,4 @@
-import {CDN_URL , LOGO_URL} from "../utils/contant"
+import {CDN_URL} from "../utils/contant"
  
 const RestarentCart = (props) => {
     const { resData } = props;
