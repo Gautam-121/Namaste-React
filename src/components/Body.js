@@ -2,91 +2,90 @@ import RestarentCart from "./RestarentCart"; // default import
 import resList from "../utils/mockData";
 import { useState , useEffect} from "react"; // name import
 import Shimmer from "./Shimmer";
-import { render } from "react-dom";
 
 const Body = () => {
-  
-  const [ listofRestarents , setListOfRestarents] =  useState(resList)
-  const [ serachText , setSerachText] = useState("")
-  console.log(listofRestarents)
-  console.log(serachText)
 
-  //Empty dependency array ==> call once after render 
-  // dependency array[searchText] => once after Initial render + everytime after render (my searchText changes)
+  const [filterRestarents , setFilterRestarents] = useState([])
+  const [allRestarents, setAllRestarents] = useState([]);
+  const [searchText, setSearchText] = useState("");
+
+  // Empty dependency array ==> once afer render
+  // dependency array [serchText] ==> once after initial render + everytime after render (my searchText Changes)
   useEffect(()=>{
-    // console.log("useEffect")
-
-    // Api call
-    // getRestarents()
-
+    console.log("call this dependency useEffect")
+    //Api Call
+    getRestarents()
   },[])
 
   async function getRestarents(){
-    
+
     const data = await fetch(
-      fetch("https://www.swiggy.com/dapi/restaurants/list/v5?lat=21.1458004&lng=79.0881546&page_type=DESKTOP_WEB_LISTING")
-    )
-
-    let json = await data.json()
-
-    setListOfRestarents(json?.data?.cards[2]?.data?.data?.cards)
+      "https://www.swiggy.com/dapi/restaurants/list/v5?lat=21.1458004&lng=79.0881546&page_type=DESKTOP_WEB_LISTING"
+      )
+    const json = await data.json()
+    console.log(json)
+    //Optional Chaining
+    setAllRestarents(json?.data?.cards[2]?.data?.data.cards)
+    setFilterRestarents(json?.data?.cards[2]?.data?.data.cards)
   }
+
+  const topRatedRestarent = () => {
+    const filterList = allRestarents.filter((res) => res.data.avgRating > 4);
+    setFilterRestarents(filterList);
+  };
+
+  const searchRestarent = (e) => {
+    setSearchText(e.target.value);
+  };
+
+  const changeResListAccToSearch = () => {
+    // 8 restarent list ==> filteres rest with restName
+    let serachData = allRestarents.filter((res) => {
+      return res?.data?.name?.toLowerCase()?.includes(searchText.toLowerCase());
+    });
+
+    setFilterRestarents(serachData);
+  };
 
   console.log("render")
 
-  //Conditional Rendering
-  // if restarent is empty => shimmer UI
-  // if restarent has data => actual data UI
+  //Conditional Rendering --> You can show eighter Shimmer Ui or Normal Ul
+  // if listRestarent is empty  ==> Shimmer Ui
+  // if restarent has data ==> actual daat Ui
 
-    return (listofRestarents.length == 0) ? <Shimmer/> :  (
-      <div className="body">
-        <div className="search-bar">
-          <input 
+  // not render component (Early return)
+  if(!allRestarents) return null;
 
-          type="text" 
-          placeholder="Search" 
-          value={serachText} 
-          onChange={ e => {
-            //update searchText Each click keybord
-            setSerachText(e.target.value)
-          }}
-          />
-          <button 
-          onClick={()=>{
+  if(filterRestarents.length == 0){
+    return <h1>No Restarent Mathches Your Filter!!</h1>
+  }
 
-            // filter restarent using SearchText
-            let filterList = listofRestarents.filter( res=>{
-              return res?.data?.name?.toLowerCase()?.includes() == (serachText?.toLowerCase())
-            })
-
-            setListOfRestarents(filterList)
-
-          }}>Search</button>
-        </div>
-        <div className="filter">
-          <button
-            className="filter-btn"
-            onClick={() => {
-
-               // Logic for filter
-               const filterList = listofRestarents.filter(
-                res => res.data.avgRating > 4
-               )
-               setListOfRestarents(filterList)
-
-            }}
-          >
-            Top Rated Restarent
-          </button>
-        </div>
-        <div className="restarent-container">
-          {listofRestarents.map(restarent => ( // card are generated bt mockData present in restList , if we changes resList thing we can change anything
-              <RestarentCart key={restarent.data.id} resData={restarent} />
-            )
-          )}
-        </div>
+  return allRestarents?.length == 0 ? (
+    <Shimmer />
+  ) : (
+    <div className="body">
+      <div className="search-bar">
+        <input
+          type="text"
+          value={searchText}
+          onChange={searchRestarent}
+          placeholder="Search"
+        />
+        <button onClick={changeResListAccToSearch}>Search</button>
       </div>
-    );
-  };
+      <div className="filter">
+        <button className="filter-btn" onClick={topRatedRestarent}>
+          Top Rated Restarent
+        </button>
+      </div>
+      <div className="restarent-container">
+        {/* { "Yoy have to write logic for No restarent found here"} */}
+        {filterRestarents.map((restarent) => (
+          <RestarentCart key={restarent.data.id} resData={restarent} />
+        ))}
+      </div>
+    </div>
+  );
+};
 
-export default Body
+export default Body;
